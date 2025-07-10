@@ -1,14 +1,11 @@
 tasks:
   - name: aws cli
     env:
-      AWS_CLI_AUTO_PROMPT=on-partial
-    before:
+      AWS_CLI_AUTO_PROMPT: on-partial
+    before: |
       cd /workspace
       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
       unzip awscliv2.zip
       sudo ./aws/install
       cd /workspace/AWS-Examples
       cd $THEIA_WORKSPACE_ROOT
-      gp env export AWS_ACCESS_KEY_ID
-      gp env export AWS_SECRET_ACCESS_KEY
-      gp env export AWS_DEFAULT_REGION
