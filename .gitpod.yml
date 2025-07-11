@@ -1,8 +1,22 @@
 tasks:
+  - name: utils
+    before: |
+      sudo apt-get install tree
+
   - name: aws cli
-    before:
-    cd /workspace
+    env:
+      AWS_CLI_AUTO_PROMPT: on-partial
+    before: |
+      cd /workspace
+      
+      # Download and install AWS CLI
       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-      unzip awscliv2.zip
+      unzip -q awscliv2.zip
       sudo ./aws/install
-      cd $THEIA_WORKSPACE_ROOT
+      rm -rf aws awscliv2.zip
+      
+      # Navigate to your project folder if it exists
+      if [ -d "/workspace/AWS-Examples" ]; then
+        cd /workspace/AWS-Examples
+      fi
+

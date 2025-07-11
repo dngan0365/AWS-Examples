@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+echo "== delete-object =="
+
+# Check for bucket name
+if [ -z "$1" ]; then
+    echo "Usage: ./delete-object.sh <bucket-name>"
+    exit 1
+fi
+
+BUCKET_NAME="$1"
+
+# List all object keys in the bucket
+OBJECT_KEYS=$(aws s3api list-objects-v2 --bucket "$BUCKET_NAME" --query 'Contents[].Key' --output text)
+
+# Check if bucket is empty
+if [ -z "$OBJECT_KEYS" ]; then
+    echo "Bucket is already empty."
+    exit 0
+fi
+
+# Convert the keys into a JSON payload for batch deletion
+DELETE_JSON=$(aws s3api list-objects-v2 --bucket "$BUCKET_NAME" --query 'Contents[].Key' --output json | jq '{Objects: map({Key: .}), Quiet: false}')
+
+echo "Deleting the following objects from $BUCKET_NAME:"
+echo "$DELETE_JSON" | jq
+
+# Send delete request
+aws s3api delete-objects --bucket "$BUCKET_NAME" --delete "$DELETE_JSON"
