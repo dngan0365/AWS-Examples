@@ -2,6 +2,15 @@ tasks:
   - name: utils
     before: |
       sudo apt-get install tree
+  -name: cdk
+    before: |
+      # Install AWS CDK
+      npm install -g aws-cdk
+      
+      # Navigate to your project folder if it exists
+      if [ -d "/workspace/AWS-Examples" ]; then
+        cd /workspace/AWS-Examples
+      fi
 
   - name: aws cli
     env:
